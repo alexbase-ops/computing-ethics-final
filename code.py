@@ -1,26 +1,24 @@
 """
-Wage Gap Calculator
-Based on BLS 2023 data, AAUW research, and Pew Research Center findings.
-Compares expected salary to a White male baseline and projects lifetime earnings gaps.
+Wage Gap Calculator - Streamlit Web App
+Run with: streamlit run app.py
+Dependencies: pip install streamlit matplotlib numpy
 """
 
+import streamlit as st
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import numpy as np
 
 
-# ── Wage ratio data relative to White men (baseline = 1.0) ──────────────────
-# Sources: BLS Highlights of Women's Earnings 2023, AAUW, Pew Research Center
-
+# Wage ratios relative to a White man (1.00 = baseline).
+# Source: BLS Highlights of Women's Earnings 2023, AAUW, Pew Research Center.
 WAGE_RATIOS = {
-    # (gender, race): ratio vs white man
     ("man",   "white"):           1.00,
     ("man",   "asian"):           1.15,
     ("man",   "black"):           0.76,
     ("man",   "hispanic/latino"): 0.68,
     ("man",   "native american"): 0.70,
     ("man",   "multiracial"):     0.83,
-
     ("woman", "white"):           0.79,
     ("woman", "asian"):           0.87,
     ("woman", "black"):           0.64,
@@ -29,153 +27,162 @@ WAGE_RATIOS = {
     ("woman", "multiracial"):     0.68,
 }
 
-# Industry salary multipliers relative to national median (~$59,000 in 2023)
+# How much each industry pays relative to the national median.
+# 1.85 = 85% above median, 0.60 = 40% below median.
 INDUSTRY_MULTIPLIERS = {
-    "technology":          1.85,
-    "finance":             1.70,
-    "healthcare":          1.30,
-    "education":           0.90,
-    "retail":              0.70,
-    "food service":        0.60,
-    "construction":        1.10,
-    "manufacturing":       1.05,
-    "government":          1.15,
-    "nonprofit":           0.85,
-    "arts/entertainment":  0.80,
-    "other":               1.00,
+    "Arts/Entertainment":  0.80,
+    "Construction":        1.10,
+    "Education":           0.90,
+    "Finance":             1.70,
+    "Food Service":        0.60,
+    "Government":          1.15,
+    "Healthcare":          1.30,
+    "Manufacturing":       1.05,
+    "Nonprofit":           0.85,
+    "Other":               1.00,
+    "Retail":              0.70,
+    "Technology":          1.85,
 }
 
-# Education multipliers
 EDUCATION_MULTIPLIERS = {
-    "less than high school": 0.65,
-    "high school diploma":   0.80,
-    "some college":          0.90,
-    "associate degree":      0.95,
-    "bachelor degree":       1.20,
-    "master degree":         1.40,
-    "doctoral degree":       1.65,
-    "professional degree":   1.80,
+    "Less than High School": 0.65,
+    "High School Diploma":   0.80,
+    "Some College":          0.90,
+    "Associate Degree":      0.95,
+    "Bachelor's Degree":     1.20,
+    "Master's Degree":       1.40,
+    "Doctoral Degree":       1.65,
+    "Professional Degree":   1.80,
 }
 
-NATIONAL_MEDIAN = 59000  # BLS 2023 median weekly earnings annualized
-BASELINE_SALARY  = 75000  # White man baseline used for gap comparison
-CAREER_YEARS     = 40     # Standard working career length
+# BLS 2023 national median annual earnings — the base for all calculations.
+NATIONAL_MEDIAN = 59000
+
+# Research callouts shown in the UI for specific demographic groups.
+CONTEXT = {
+    ("woman", "hispanic/latino"): "Hispanic women earn 54 cents per White man's dollar, the largest gap of any group tracked by BLS.",
+    ("woman", "black"):           "Black women earn 64 cents per White man's dollar. Progress has slowed significantly since 2000 (Pew, 2023).",
+    ("woman", "white"):           "White women earn 79 cents per White man's dollar. The gender pay gap has narrowed only slightly over two decades.",
+    ("woman", "native american"): "Native American women earn 51 cents per White man's dollar, one of the most severe gaps in BLS data.",
+    ("man",   "black"):           "Black men earn 76 cents per White man's dollar, reflecting both hiring and promotion discrimination.",
+    ("man",   "hispanic/latino"): "Hispanic men earn 68 cents per White man's dollar across all industries.",
+    ("man",   "asian"):           "Asian men earn 15% more than White men on average, though this masks variation across Asian subgroups.",
+}
 
 
-def get_choice(prompt, options):
-    print(f"\n{prompt}")
-    for i, opt in enumerate(options, 1):
-        print(f"  {i}. {opt.title()}")
-    while True:
-        try:
-            choice = int(input("Enter number: "))
-            if 1 <= choice <= len(options):
-                return options[choice - 1]
-        except ValueError:
-            pass
-        print(f"Enter a number between 1 and {len(options)}.")
+# ── Calculations ──────────────────────────────────────────────────────────────
 
-
-def get_int(prompt, min_val, max_val):
-    while True:
-        try:
-            val = int(input(prompt))
-            if min_val <= val <= max_val:
-                return val
-        except ValueError:
-            pass
-        print(f"Enter a number between {min_val} and {max_val}.")
-
-
-def calculate_salary(gender, race, industry, education, experience_years):
-    ratio       = WAGE_RATIOS.get((gender, race), 1.0)
-    ind_mult    = INDUSTRY_MULTIPLIERS.get(industry, 1.0)
-    edu_mult    = EDUCATION_MULTIPLIERS.get(education, 1.0)
-    exp_mult    = 1 + (experience_years * 0.02)   # ~2% growth per year experience
-
-    salary = NATIONAL_MEDIAN * ratio * ind_mult * edu_mult * exp_mult
-    return round(salary, 2)
-
-
-def calculate_baseline_salary(industry, education, experience_years):
+def calculate_salary(gender, race, industry, education, experience):
+    """
+    Estimates annual salary by multiplying the national median by four factors:
+    the demographic wage ratio, industry pay level, education premium, and
+    an experience bump of roughly 2% per year.
+    """
+    ratio    = WAGE_RATIOS.get((gender, race), 1.0)
     ind_mult = INDUSTRY_MULTIPLIERS.get(industry, 1.0)
     edu_mult = EDUCATION_MULTIPLIERS.get(education, 1.0)
-    exp_mult = 1 + (experience_years * 0.02)
+    exp_mult = 1 + (experience * 0.02)
+    return round(NATIONAL_MEDIAN * ratio * ind_mult * edu_mult * exp_mult, 2)
+
+
+def calculate_baseline(industry, education, experience):
+    """
+    Same calculation as calculate_salary but with a wage ratio of 1.0,
+    so the comparison is apples-to-apples within the same job context.
+    """
+    ind_mult = INDUSTRY_MULTIPLIERS.get(industry, 1.0)
+    edu_mult = EDUCATION_MULTIPLIERS.get(education, 1.0)
+    exp_mult = 1 + (experience * 0.02)
     return round(NATIONAL_MEDIAN * 1.0 * ind_mult * edu_mult * exp_mult, 2)
 
 
-def lifetime_earnings(annual_salary, current_age, retirement_age=65, growth_rate=0.03):
-    years = retirement_age - current_age
-    total = 0
+def lifetime_earnings(annual_salary, current_age, retirement_age=65, growth=0.03):
+    """
+    Projects cumulative earnings from current_age to retirement, applying
+    3% annual growth each year. The gap between two people's lifetime totals
+    shows how a small annual difference compounds into a much larger one.
+    """
+    total  = 0
     salary = annual_salary
-    for _ in range(years):
-        total += salary
-        salary *= (1 + growth_rate)
+    for _ in range(retirement_age - current_age):
+        total  += salary
+        salary *= (1 + growth)
     return round(total, 2)
 
 
-def plot_salary_comparison(user_salary, baseline_salary, gender, race, industry):
-    fig, axes = plt.subplots(1, 3, figsize=(16, 6))
+# ── Charts ────────────────────────────────────────────────────────────────────
+
+def make_charts(user_salary, baseline_salary, gender, race, industry, current_age):
+    """
+    Builds a 3-panel figure:
+      1. Bar chart: user salary vs. baseline
+      2. Horizontal bars: all demographic groups in the selected industry
+         (standardized to Bachelor's degree, 10 years experience)
+      3. Line chart: cumulative lifetime earnings from current age to 65,
+         with the gap shaded between the two lines
+    """
+    fig, axes = plt.subplots(1, 3, figsize=(16, 5))
     fig.patch.set_facecolor("#0f0f1a")
     for ax in axes:
         ax.set_facecolor("#1a1a2e")
 
-    # ── Chart 1: Salary comparison bar chart ────────────────────────────────
+    # ── Panel 1: Annual salary bar chart ──────────────────────────────────────
     ax1 = axes[0]
-    categories = ["You", "White Man\n(Baseline)"]
-    salaries   = [user_salary, baseline_salary]
-    colors     = ["#e94560", "#4ecca3"]
-    bars = ax1.bar(categories, salaries, color=colors, width=0.5, edgecolor="none")
-
-    for bar, val in zip(bars, salaries):
-        ax1.text(bar.get_x() + bar.get_width() / 2,
-                 bar.get_height() + 500,
-                 f"${val:,.0f}",
-                 ha="center", va="bottom", color="white", fontsize=11, fontweight="bold")
-
-    ax1.set_title("Annual Salary Comparison", color="white", fontsize=13, pad=15)
+    bars = ax1.bar(
+        ["You", "White Man\n(Baseline)"],
+        [user_salary, baseline_salary],
+        color=["#e94560", "#4ecca3"],
+        width=0.5,
+        edgecolor="none"
+    )
+    for bar, val in zip(bars, [user_salary, baseline_salary]):
+        ax1.text(
+            bar.get_x() + bar.get_width() / 2,
+            bar.get_height() + 500,
+            f"${val:,.0f}",
+            ha="center", va="bottom",
+            color="white", fontsize=11, fontweight="bold"
+        )
+    gap_pct = ((baseline_salary - user_salary) / baseline_salary) * 100
+    ax1.set_title("Annual Salary Comparison", color="white", fontsize=12, pad=12)
     ax1.set_ylabel("Annual Salary ($)", color="#aaaaaa")
     ax1.tick_params(colors="white")
-    ax1.yaxis.label.set_color("#aaaaaa")
     for spine in ax1.spines.values():
         spine.set_visible(False)
-    ax1.set_ylim(0, max(salaries) * 1.2)
+    ax1.set_ylim(0, max(user_salary, baseline_salary) * 1.2)
     ax1.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f"${x:,.0f}"))
+    ax1.text(
+        0.5, 0.02, f"Gap: {gap_pct:.1f}% less than baseline",
+        transform=ax1.transAxes, ha="center",
+        color="#f5a623", fontsize=9, style="italic"
+    )
 
-    gap_pct = ((baseline_salary - user_salary) / baseline_salary) * 100
-    ax1.text(0.5, 0.02,
-             f"Gap: {gap_pct:.1f}% less than White man baseline",
-             transform=ax1.transAxes, ha="center", color="#f5a623",
-             fontsize=9, style="italic")
-
-    # ── Chart 2: All demographic groups in this industry ────────────────────
+    # ── Panel 2: All demographic groups ───────────────────────────────────────
+    # Fixed profile (Bachelor's, 10 yrs exp) so every group is on equal footing.
     ax2 = axes[1]
-    groups = []
-    group_salaries = []
-    ind_mult = INDUSTRY_MULTIPLIERS.get(industry, 1.0)
-    edu_mult = 1.20  # bachelor degree for fair comparison
-    exp_mult = 1.20  # 10 years experience
+    ind_mult       = INDUSTRY_MULTIPLIERS.get(industry, 1.0)
+    edu_mult       = 1.20
+    exp_mult       = 1.20
+    base_for_chart = NATIONAL_MEDIAN * 1.0 * ind_mult * edu_mult * exp_mult
 
+    groups, group_salaries = [], []
     for (g, r), ratio in sorted(WAGE_RATIOS.items(), key=lambda x: -x[1]):
-        label = f"{g.title()}\n{r.title()}"
-        sal   = round(NATIONAL_MEDIAN * ratio * ind_mult * edu_mult * exp_mult, 2)
-        groups.append(label)
-        group_salaries.append(sal)
+        groups.append(f"{g.title()}\n{r.title()}")
+        group_salaries.append(
+            round(NATIONAL_MEDIAN * ratio * ind_mult * edu_mult * exp_mult, 2)
+        )
 
-    bar_colors = ["#e94560" if s < baseline_salary * ind_mult * edu_mult * exp_mult else "#4ecca3"
-                  for s in group_salaries]
-    bar_colors[0] = "#4ecca3"  # White man always green (baseline)
-
-    bars2 = ax2.barh(groups, group_salaries, color=bar_colors, edgecolor="none")
-    ax2.set_title(f"All Groups: {industry.title()} Industry\n(Bachelor's, 10 yrs exp)",
-                  color="white", fontsize=11, pad=15)
+    colors = ["#4ecca3" if s >= base_for_chart else "#e94560" for s in group_salaries]
+    ax2.barh(groups, group_salaries, color=colors, edgecolor="none")
+    ax2.set_title(
+        f"All Groups: {industry}\n(Bachelor's, 10 yrs exp)",
+        color="white", fontsize=10, pad=12
+    )
     ax2.set_xlabel("Annual Salary ($)", color="#aaaaaa")
     ax2.tick_params(colors="white", labelsize=7)
-    ax2.xaxis.label.set_color("#aaaaaa")
     for spine in ax2.spines.values():
         spine.set_visible(False)
     ax2.xaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f"${x/1000:.0f}k"))
-
     legend_items = [
         mpatches.Patch(color="#4ecca3", label="At or above baseline"),
         mpatches.Patch(color="#e94560", label="Below baseline"),
@@ -183,31 +190,29 @@ def plot_salary_comparison(user_salary, baseline_salary, gender, race, industry)
     ax2.legend(handles=legend_items, loc="lower right",
                facecolor="#1a1a2e", labelcolor="white", fontsize=8)
 
-    # ── Chart 3: Lifetime earnings gap over career ───────────────────────────
+    # ── Panel 3: Lifetime earnings trajectory ─────────────────────────────────
     ax3 = axes[2]
-    ages         = list(range(22, 66))
-    user_cumul   = []
-    base_cumul   = []
-    user_annual  = user_salary
-    base_annual  = baseline_salary
-    u_total = 0
-    b_total = 0
+    ages             = list(range(current_age, 66))
+    u_cumul, b_cumul = [], []
+    u_total, b_total = 0, 0
+    u_sal, b_sal     = user_salary, baseline_salary
 
     for _ in ages:
-        u_total += user_annual
-        b_total += base_annual
-        user_cumul.append(u_total)
-        base_cumul.append(b_total)
-        user_annual *= 1.03
-        base_annual *= 1.03
-
-    ax3.fill_between(ages, user_cumul, base_cumul, alpha=0.25, color="#e94560")
-    ax3.plot(ages, user_cumul, color="#e94560", linewidth=2.5, label="Your earnings")
-    ax3.plot(ages, base_cumul, color="#4ecca3", linewidth=2.5, label="White man earnings")
+        u_total += u_sal
+        b_total += b_sal
+        u_cumul.append(u_total)
+        b_cumul.append(b_total)
+        u_sal *= 1.03
+        b_sal *= 1.03
 
     final_gap = b_total - u_total
-    ax3.set_title("Lifetime Earnings Trajectory\n(3% annual growth assumed)",
-                  color="white", fontsize=11, pad=15)
+    ax3.fill_between(ages, u_cumul, b_cumul, alpha=0.25, color="#e94560")
+    ax3.plot(ages, u_cumul, color="#e94560", linewidth=2.5, label="Your earnings")
+    ax3.plot(ages, b_cumul, color="#4ecca3", linewidth=2.5, label="White man earnings")
+    ax3.set_title(
+        "Lifetime Earnings Trajectory\n(3% annual growth)",
+        color="white", fontsize=10, pad=12
+    )
     ax3.set_xlabel("Age", color="#aaaaaa")
     ax3.set_ylabel("Cumulative Earnings ($)", color="#aaaaaa")
     ax3.tick_params(colors="white")
@@ -215,97 +220,73 @@ def plot_salary_comparison(user_salary, baseline_salary, gender, race, industry)
         spine.set_visible(False)
     ax3.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f"${x/1e6:.1f}M"))
     ax3.legend(facecolor="#1a1a2e", labelcolor="white", fontsize=9)
-    ax3.text(0.5, 0.05,
-             f"Lifetime gap: ${final_gap:,.0f}",
-             transform=ax3.transAxes, ha="center", color="#f5a623",
-             fontsize=10, fontweight="bold")
+    ax3.text(
+        0.5, 0.05, f"Lifetime gap: ${final_gap:,.0f}",
+        transform=ax3.transAxes, ha="center",
+        color="#f5a623", fontsize=10, fontweight="bold"
+    )
 
-    plt.suptitle("Wage Gap Analysis", color="white", fontsize=16, fontweight="bold", y=1.01)
     plt.tight_layout()
-    output_path = "/mnt/user-data/outputs/wage_gap_analysis.png"
-    plt.savefig(output_path, dpi=150, bbox_inches="tight", facecolor="#0f0f1a")
-    plt.close()
-    print(f"\nChart saved to: {output_path}")
+    return fig
 
 
-def print_report(gender, race, industry, education, experience, current_age,
-                 user_salary, baseline_salary):
-    gap_dollars = baseline_salary - user_salary
-    gap_pct     = (gap_dollars / baseline_salary) * 100
-    user_life   = lifetime_earnings(user_salary, current_age)
-    base_life   = lifetime_earnings(baseline_salary, current_age)
-    life_gap    = base_life - user_life
+# ── Streamlit UI ──────────────────────────────────────────────────────────────
+# Streamlit reruns the whole script every time an input changes, so all
+# calculations below always reflect whatever is currently in the sidebar.
 
-    print("\n" + "=" * 55)
-    print("           WAGE GAP ANALYSIS REPORT")
-    print("=" * 55)
-    print(f"  Profile  : {gender.title()}, {race.title()}")
-    print(f"  Industry : {industry.title()}")
-    print(f"  Education: {education.title()}")
-    print(f"  Experience: {experience} years  |  Current age: {current_age}")
-    print("-" * 55)
-    print(f"  Your expected salary    : ${user_salary:>12,.2f}")
-    print(f"  White man baseline      : ${baseline_salary:>12,.2f}")
-    print(f"  Annual gap              : ${gap_dollars:>12,.2f}  ({gap_pct:.1f}% less)")
-    print("-" * 55)
-    print(f"  Your lifetime earnings  : ${user_life:>12,.2f}")
-    print(f"  Baseline lifetime earn. : ${base_life:>12,.2f}")
-    print(f"  Lifetime gap            : ${life_gap:>12,.2f}")
-    print("=" * 55)
+st.set_page_config(page_title="Wage Gap Calculator", layout="wide")
+st.title("Wage Gap Calculator")
+st.caption("Based on BLS 2023 data, AAUW research, and Pew Research Center findings.")
 
-    print("\n  CONTEXT (from AAUW, Pew Research, BLS 2023)")
-    print("  -----------------------------------------------")
-    ratio = WAGE_RATIOS.get((gender, race), 1.0)
-    if gender == "woman" and race == "hispanic/latino":
-        print("  Hispanic women earn 54 cents per White man's dollar,")
-        print("  the largest gap of any group tracked by BLS.")
-    elif gender == "woman" and race == "black":
-        print("  Black women earn 64 cents per White man's dollar.")
-        print("  Progress has slowed significantly since 2000 (Pew, 2023).")
-    elif gender == "woman" and race == "white":
-        print("  White women earn 79 cents per White man's dollar.")
-        print("  The gender pay gap has narrowed only slightly over 2 decades.")
-    elif gender == "man" and race == "black":
-        print("  Black men earn 76 cents per White man's dollar,")
-        print("  reflecting both hiring and promotion discrimination.")
-    elif gender == "man" and race == "asian":
-        print("  Asian men earn 15% more than White men on average,")
-        print("  though this masks large variation across Asian subgroups.")
+st.sidebar.header("Your Profile")
 
-    print(f"\n  Your wage ratio: {ratio:.2f} cents per White man's dollar.")
-    print(f"  Over a 40-year career, this compounds to ${life_gap:,.0f} lost.")
-    print("=" * 55)
+gender = st.sidebar.selectbox("Gender", ["woman", "man"]).lower()
+race = st.sidebar.selectbox(
+    "Race / Ethnicity",
+    ["white", "black", "hispanic/latino", "asian", "native american", "multiracial"]
+).lower()
+industry  = st.sidebar.selectbox("Industry", sorted(INDUSTRY_MULTIPLIERS.keys()))
+education = st.sidebar.selectbox("Education Level", list(EDUCATION_MULTIPLIERS.keys()))
+experience  = st.sidebar.slider("Years of Experience", 0, 45, 5)
+current_age = st.sidebar.slider("Current Age", 18, 60, 25)
 
+user_salary     = calculate_salary(gender, race, industry, education, experience)
+baseline_salary = calculate_baseline(industry, education, experience)
+gap_dollars     = baseline_salary - user_salary
+gap_pct         = (gap_dollars / baseline_salary) * 100
+user_life       = lifetime_earnings(user_salary, current_age)
+base_life       = lifetime_earnings(baseline_salary, current_age)
+life_gap        = base_life - user_life
+ratio           = WAGE_RATIOS.get((gender, race), 1.0)
 
-def main():
-    print("=" * 55)
-    print("         WAGE GAP CALCULATOR")
-    print("  Based on BLS 2023, AAUW, and Pew Research data")
-    print("=" * 55)
+col1, col2, col3, col4 = st.columns(4)
+col1.metric("Your Expected Salary", f"${user_salary:,.0f}")
+col2.metric("White Man Baseline",   f"${baseline_salary:,.0f}")
+col3.metric("Annual Gap", f"${gap_dollars:,.0f}", delta=f"-{gap_pct:.1f}%", delta_color="inverse")
+col4.metric("Lifetime Gap", f"${life_gap:,.0f}")
 
-    genders    = ["woman", "man"]
-    races      = ["white", "black", "hispanic/latino", "asian",
-                  "native american", "multiracial"]
-    industries = sorted(INDUSTRY_MULTIPLIERS.keys())
-    educations = list(EDUCATION_MULTIPLIERS.keys())
+st.divider()
 
-    gender    = get_choice("Select your gender:", genders)
-    race      = get_choice("Select your race/ethnicity:", races)
-    industry  = get_choice("Select your industry:", industries)
-    education = get_choice("Select your highest education level:", educations)
-    experience = get_int("\nYears of work experience (0-45): ", 0, 45)
-    current_age = get_int("Current age (18-60): ", 18, 60)
+st.subheader("Your Wage Ratio")
+st.write(f"For every **$1.00** a White man earns, you earn **${ratio:.2f}**.")
 
-    user_salary     = calculate_salary(gender, race, industry, education, experience)
-    baseline_salary = calculate_baseline_salary(industry, education, experience)
+context_note = CONTEXT.get((gender, race))
+if context_note:
+    st.info(context_note)
 
-    print_report(gender, race, industry, education, experience, current_age,
-                 user_salary, baseline_salary)
+st.divider()
 
-    print("\nGenerating charts...")
-    plot_salary_comparison(user_salary, baseline_salary, gender, race, industry)
-    print("Done.")
+st.subheader("Visual Analysis")
+fig = make_charts(user_salary, baseline_salary, gender, race, industry, current_age)
+st.pyplot(fig)
 
+st.divider()
 
-if __name__ == "__main__":
-    main()
+with st.expander("Data Sources"):
+    st.markdown("""
+- **BLS** — *Highlights of Women's Earnings in 2023* (Report 1100)
+- **AAUW** — *Today's Gender Pay Gap Data Shows Decline in Progress Towards Equity*
+- **Pew Research Center** — *Gender pay gap in U.S. has narrowed slightly over 2 decades*
+
+All salary figures are estimates based on published wage ratios. This tool uses an **unadjusted** wage gap, which reflects real-world outcomes including occupational segregation and discrimination. Lifetime earnings assume 3% annual growth and retirement at age 65.
+    """)
