@@ -23,51 +23,83 @@ The project connects to DSJ by making making wage inequality visible and measura
 
 ## Installation and Execution
 
-Windows
+### Windows
 
-Download and install Python 3.8+ from python.org. Check "Add Python to PATH" during installation.
-Open Command Prompt and clone or download the repository.
-Install dependencies:
+1. Download and install Python 3.8+ from [python.org](https://www.python.org/downloads/). Check **"Add Python to PATH"** during installation.
+2. Open Command Prompt and clone or download the repository.
+3. Install dependencies:
 
-cmdpip install matplotlib numpy streamlit
+```cmd
+pip install matplotlib numpy streamlit
+```
 
-Run the command-line version:
+4. Run the command-line version:
 
-cmdpython wage_gap_calculator.py
+```cmd
+python wage_gap_calculator.py
+```
+
 Or run the web app:
-cmdstreamlit run app.py
 
-macOS
+```cmd
+streamlit run app.py
+```
 
-macOS includes Python 3, but we recommend installing the latest version via python.org or Homebrew:
+---
 
-bashbrew install python
+### macOS
 
-Open Terminal and clone or download the repository.
-Install dependencies:
+1. macOS includes Python 3, but we recommend installing the latest version via [python.org](https://www.python.org/downloads/) or Homebrew:
 
-bashpip3 install matplotlib numpy streamlit
+```bash
+brew install python
+```
 
-Run the command-line version:
+2. Open Terminal and clone or download the repository.
+3. Install dependencies:
 
-bashpython3 wage_gap_calculator.py
+```bash
+pip3 install matplotlib numpy streamlit
+```
+
+4. Run the command-line version:
+
+```bash
+python3 wage_gap_calculator.py
+```
+
 Or run the web app:
-bashstreamlit run app.py
 
-Linux (Ubuntu/Debian)
+```bash
+streamlit run app.py
+```
 
-Python 3 is typically pre-installed. Verify with python3 --version.
-Install dependencies. Ubuntu 24+ uses a system-managed Python environment, so use the --break-system-packages flag:
+---
 
-bashpip install matplotlib numpy streamlit --break-system-packages
+### Linux (Ubuntu/Debian)
 
-Run the command-line version:
+1. Python 3 is typically pre-installed. Verify with `python3 --version`.
+2. Install dependencies. Ubuntu 24+ uses a system-managed Python environment, so use the `--break-system-packages` flag:
 
-bashpython3 wage_gap_calculator.py
+```bash
+pip install matplotlib numpy streamlit --break-system-packages
+```
+
+3. Run the command-line version:
+
+```bash
+python3 wage_gap_calculator.py
+```
+
 Or run the web app:
-bashstreamlit run app.py
 
-The web app opens automatically at http://localhost:8501 in your browser. No additional configuration is needed. Follow the sidebar prompts to enter your profile.
+```bash
+streamlit run app.py
+```
+
+---
+
+**The web app** opens automatically at `http://localhost:8501` in your browser. No additional configuration is needed. Follow the sidebar prompts to enter your profile.
 ```
 
 **4. Follow the prompts.** The tool walks you through each input one at a time. No configuration file is needed.
