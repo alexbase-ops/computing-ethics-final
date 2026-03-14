@@ -148,7 +148,42 @@ streamlit run code.py
 
 ---
 
-**The web app** opens automatically at `http://localhost:8501` in your browser. No additional configuration is needed. Follow the sidebar prompts to enter your profile.
+## Sample Use Cases
+ 
+### Desktop GUI (gui.py)
+ 
+The screenshot below shows the Tkinter desktop interface. The user selects their gender via radio buttons, then picks their race/ethnicity and education level from listboxes. Bachelor's Degree is selected by default. Clicking "See My Statistics" displays the salary comparison and wage ratio results below the button.
+ 
+![Screenshot of the Wage Gap Calculator desktop GUI. A dark navy background with white text shows three input sections: a Gender row with radio buttons for Male, Female, Non-binary, and Prefer not to say; a Race/Ethnicity listbox with options including White, Black, Hispanic/Latino, Asian, Native American, and Multiracial; and an Education Level listbox with eight options from Less than High School to Professional Degree, with Bachelor's Degree highlighted in pink. A pink See My Statistics button sits below the inputs.](screenshot.png)
+ 
+---
+ 
+### Web App (code.py)
+ 
+The Streamlit web app provides the same inputs via a sidebar, with additional fields for industry, years of experience, and current age. It displays four summary metrics at the top of the page and renders three charts: an annual salary comparison bar chart, a demographic comparison across all groups in the selected industry, and a lifetime earnings trajectory showing how the gap compounds from the user's current age to retirement.
+ 
+> Additional screenshots of the web app output will be added once the Streamlit deployment is complete.
+ 
+---
+ 
+## File Table
+ 
+| File | Description | Contributor |
+|------|-------------|-------------|
+| `code.py` | Main Streamlit web app. Handles salary calculation, lifetime earnings projection, chart generation, and UI. | Alexander Gardner |
+| `gui.py` | Tkinter desktop GUI. Takes user inputs via dropdowns and radio buttons and displays salary gap results. | Nathaniel Cisler |
+| `README.md` | Project documentation, background research, and instructions. | Alexander Gardner, Jaeden Poole |
+| `screenshot.png` | Screenshot of the desktop GUI showing all input fields and the See My Statistics button. | Alexander Gardner |
+ 
+---
+ 
+## Citations
+ 
+Bureau of Labor Statistics. (2024). *Highlights of women's earnings in 2023* (Report 1100). U.S. Department of Labor. https://www.bls.gov/opub/reports/womens-earnings/2023/
+
+AAUW. “The Simple Truth about the Pay Gap.” AAUW : Empowering Women since 1881, AAUW, 2022, www.aauw.org/resources/research/simple-truth/.
+
+Aragao, C. (2023). *Gender pay gap in U.S. has narrowed slightly over 2 decades, but remains large*. Pew Research Center. https://www.pewresearch.org/short-reads/2023/03/01/gender-pay-gap-facts/
 
 ---
 
