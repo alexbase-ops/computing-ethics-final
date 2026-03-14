@@ -268,7 +268,8 @@ col4.metric("Lifetime Gap", f"${life_gap:,.0f}")
 st.divider()
 
 st.subheader("Your Wage Ratio")
-st.markdown(f"For every **$1.00** a White man earns, you earn **${ratio:.2f}**.")
+dollar_ratio = f"${ratio:.2f}"
+st.markdown(f"For every **$1.00** a White man earns, you earn **{dollar_ratio}**.")
 
 context_note = CONTEXT.get((gender, race))
 if context_note:
