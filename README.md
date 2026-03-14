@@ -36,12 +36,12 @@ After downloading or cloning the repo, open your terminal and navigate to the pr
  
 **Windows (Command Prompt):**
 ```cmd
-cd C:\Users\YourName\Downloads\computing-ethics-final-Wage-Gap-Calculator--main
+cd C:\Users\YourName\Downloads\computing-ethics-final-Wage-Gap-Calculator--main\computing-ethics-final-Wage-Gap-Calculator--main
 ```
  
 **macOS / Linux:**
 ```bash
-cd ~/Downloads/computing-ethics-final-Wage-Gap-Calculator--main
+cd ~/Downloads/computing-ethics-final-Wage-Gap-Calculator--main\computing-ethics-final-Wage-Gap-Calculator--main
 ```
  
 Replace `YourName` with your actual username. If you cloned the repo with Git, the folder will be wherever you ran `git clone`.
