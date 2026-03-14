@@ -11,131 +11,146 @@ The project connects to DSJ by making making wage inequality visible and measura
 
 
 ## Dependencies
+ 
 **Python version:** 3.8 or higher
-
+ 
 **Third-party libraries:**
-
+ 
 - `matplotlib` — generates all charts and graphs
 - `numpy` — supports numerical calculations
-
+- `streamlit` — powers the web app interface
+ 
 **Data sources:**
+ 
+- U.S. Bureau of Labor Statistics, *Highlights of Women's Earnings in 2023*
+- AAUW, *Today's Gender Pay Gap Data Shows Decline in Progress Towards Equity*
+- Pew Research Center, *Gender pay gap in U.S. has narrowed slightly over 2 decades*
 
+---
 
 ## Installation and Execution
 
-### Windows
-
-1. Download and install Python 3.8+ from [python.org](https://www.python.org/downloads/). Check **"Add Python to PATH"** during installation.
-2. Open Command Prompt and clone or download the repository.
-3. Install dependencies:
-
-```cmd
-pip install matplotlib numpy streamlit
-```
-
-4. Run the command-line version:
-
-```cmd
-python wage_gap_calculator.py
-```
-
-Or run the web app:
-
-```cmd
-streamlit run app.py
-```
-
----
-
-### macOS
-
-1. macOS includes Python 3, but we recommend installing the latest version via [python.org](https://www.python.org/downloads/) or Homebrew:
-
-```bash
-brew install python
-```
-
-2. Open Terminal and clone or download the repository.
-3. Install dependencies:
-
-```bash
-pip3 install matplotlib numpy streamlit
-```
-
-4. Run the command-line version:
-
-```bash
-python3 wage_gap_calculator.py
-```
-
-Or run the web app:
-
-```bash
-streamlit run app.py
-```
-
----
-
-### Linux (Ubuntu/Debian)
-
-1. Python 3 is typically pre-installed. Verify with `python3 --version`.
-2. Install dependencies. Ubuntu 24+ uses a system-managed Python environment, so use the `--break-system-packages` flag:
-
-```bash
-pip install matplotlib numpy streamlit --break-system-packages
-```
-
-3. Run the command-line version:
-
-```bash
-python3 wage_gap_calculator.py
-```
-
-Or run the web app:
-
-```bash
-streamlit run app.py
-```
-
----
-
-### If Running Locally
+### Finding Your Project Directory
+ 
 After downloading or cloning the repo, open your terminal and navigate to the project directory before running any commands.
-
+ 
 **Windows (Command Prompt):**
 ```cmd
 cd C:\Users\YourName\Downloads\computing-ethics-final-Wage-Gap-Calculator--main
 ```
-
-Replace `YourName` with your actual username. If you cloned the repo with Git, the folder will be wherever you ran `git clone`.
-
+ 
 **macOS / Linux:**
 ```bash
 cd ~/Downloads/computing-ethics-final-Wage-Gap-Calculator--main
 ```
-
+ 
+Replace `YourName` with your actual username. If you cloned the repo with Git, the folder will be wherever you ran `git clone`.
+ 
 If you can't find the folder, use these commands to locate it by filename:
-
+ 
 **Windows:**
 ```cmd
 dir /s /b "gui.py"
 ```
-
+ 
 **macOS / Linux:**
 ```bash
 find ~ -name "gui.py"
 ```
-
+ 
 Once you are inside the project directory, all run commands will work as written.
+ 
+---
+ 
+### Windows
+ 
+1. Download and install Python 3.8+ from [python.org](https://www.python.org/downloads/). Check **"Add Python to PATH"** during installation.
+2. Open Command Prompt and navigate to the project directory.
+3. Install dependencies:
+ 
+```cmd
+pip install matplotlib numpy streamlit
+```
+ 
+4. Run the desktop GUI:
+ 
+```cmd
+python gui.py
+```
+ 
+Or run the web app:
+ 
+```cmd
+streamlit run code.py
+```
+ 
+---
+ 
+### macOS
+ 
+1. macOS includes Python 3, but we recommend installing the latest version via [python.org](https://www.python.org/downloads/) or Homebrew:
+ 
+```bash
+brew install python
+```
+ 
+2. Open Terminal and navigate to the project directory.
+3. Install dependencies:
+ 
+```bash
+pip3 install matplotlib numpy streamlit
+```
+ 
+4. Run the desktop GUI:
+ 
+```bash
+python3 gui.py
+```
+ 
+Or run the web app:
+ 
+```bash
+streamlit run code.py
+```
+ 
+---
+ 
+### Linux (Ubuntu/Debian)
+ 
+1. Python 3 is typically pre-installed. Verify with `python3 --version`.
+2. Install Tkinter if it is not already present:
+ 
+```bash
+sudo apt install python3-tk
+```
+ 
+3. Install dependencies. Ubuntu 24+ uses a system-managed Python environment, so use the `--break-system-packages` flag:
+ 
+```bash
+pip install matplotlib numpy streamlit --break-system-packages
+```
+ 
+4. Run the desktop GUI:
+ 
+```bash
+python3 gui.py
+```
+ 
+Or run the web app:
+ 
+```bash
+streamlit run code.py
+```
+ 
+---
+ 
+**The web app** opens automatically at `http://localhost:8501` in your browser. No additional configuration is needed. Follow the sidebar prompts to enter your profile.
 
 ---
 
 **The web app** opens automatically at `http://localhost:8501` in your browser. No additional configuration is needed. Follow the sidebar prompts to enter your profile.
-```
 
-**4. Follow the prompts.** The tool walks you through each input one at a time. No configuration file is needed.
-
-```
+---
 
 ## Notes
 - All salary figures are estimates based on BLS median earnings data and published wage ratios. They are not a guarantee of individual salary.
