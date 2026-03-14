@@ -135,6 +135,8 @@ Once you are inside the project directory, all run commands will work as written
 
 **4. Follow the prompts.** The tool walks you through each input one at a time. No configuration file is needed.
 
+```
+
 ## Notes
 - All salary figures are estimates based on BLS median earnings data and published wage ratios. They are not a guarantee of individual salary.
 - The tool uses an unadjusted wage gap. This reflects real-world outcomes and not a controlled comparison.
