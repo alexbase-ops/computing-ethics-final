@@ -114,6 +114,18 @@ Replace `YourName` with your actual username. If you cloned the repo with Git, t
 cd ~/Downloads/computing-ethics-final-Wage-Gap-Calculator--main
 ```
 
+If you can't find the folder, use these commands to locate it by filename:
+
+**Windows:**
+```cmd
+dir /s /b "gui.py"
+```
+
+**macOS / Linux:**
+```bash
+find ~ -name "gui.py"
+```
+
 Once you are inside the project directory, all run commands will work as written.
 
 ---
