@@ -148,7 +148,7 @@ streamlit run app.py
 
 ---
 
-## Sample Use Cases
+## Usage Images
  
 ### Desktop GUI (gui.py)
  
