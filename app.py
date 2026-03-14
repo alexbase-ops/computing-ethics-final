@@ -13,18 +13,18 @@ import numpy as np
 # Wage ratios relative to a White man (1.00 = baseline).
 # Source: BLS Highlights of Women's Earnings 2023, AAUW, Pew Research Center.
 WAGE_RATIOS = {
-    ("man",   "white"):           1.00,
-    ("man",   "asian"):           1.15,
-    ("man",   "black"):           0.76,
-    ("man",   "hispanic/latino"): 0.68,
-    ("man",   "native american"): 0.70,
-    ("man",   "multiracial"):     0.83,
-    ("woman", "white"):           0.79,
-    ("woman", "asian"):           0.87,
-    ("woman", "black"):           0.64,
-    ("woman", "hispanic/latino"): 0.54,
-    ("woman", "native american"): 0.51,
-    ("woman", "multiracial"):     0.68,
+    ("Man",   "White"):           1.00,
+    ("Man",   "Asian"):           1.15,
+    ("Man",   "Black"):           0.76,
+    ("Man",   "Hispanic/Latino"): 0.68,
+    ("Man",   "Native American"): 0.70,
+    ("Man",   "Multiracial"):     0.83,
+    ("Woman", "White"):           0.79,
+    ("Woman", "Asian"):           0.87,
+    ("Woman", "Black"):           0.64,
+    ("Woman", "Hispanic/Latino"): 0.54,
+    ("Woman", "Native American"): 0.51,
+    ("Woman", "Multiracial"):     0.68,
 }
 
 # How much each industry pays relative to the national median.
@@ -60,13 +60,13 @@ NATIONAL_MEDIAN = 59000
 
 # Research callouts shown in the UI for specific demographic groups.
 CONTEXT = {
-    ("woman", "hispanic/latino"): "Hispanic women earn 54 cents per White man's dollar, the largest gap of any group tracked by BLS.",
-    ("woman", "black"):           "Black women earn 64 cents per White man's dollar. Progress has slowed significantly since 2000 (Pew, 2023).",
-    ("woman", "white"):           "White women earn 79 cents per White man's dollar. The gender pay gap has narrowed only slightly over two decades.",
-    ("woman", "native american"): "Native American women earn 51 cents per White man's dollar, one of the most severe gaps in BLS data.",
-    ("man",   "black"):           "Black men earn 76 cents per White man's dollar, reflecting both hiring and promotion discrimination.",
-    ("man",   "hispanic/latino"): "Hispanic men earn 68 cents per White man's dollar across all industries.",
-    ("man",   "asian"):           "Asian men earn 15% more than White men on average, though this masks variation across Asian subgroups.",
+    ("Woman", "Hispanic/Latino"): "Hispanic women earn 54 cents per White man's dollar, the largest gap of any group tracked by BLS.",
+    ("Woman", "Black"):           "Black women earn 64 cents per White man's dollar. Progress has slowed significantly since 2000 (Pew, 2023).",
+    ("Woman", "White"):           "White women earn 79 cents per White man's dollar. The gender pay gap has narrowed only slightly over two decades.",
+    ("Woman", "Native American"): "Native American women earn 51 cents per White man's dollar, one of the most severe gaps in BLS data.",
+    ("Man",   "Black"):           "Black men earn 76 cents per White man's dollar, reflecting both hiring and promotion discrimination.",
+    ("Man",   "Hispanic/Latino"): "Hispanic men earn 68 cents per White man's dollar across all industries.",
+    ("Man",   "Asian"):           "Asian men earn 15% more than White men on average, though this masks variation across Asian subgroups.",
 }
 
 
@@ -167,7 +167,7 @@ def make_charts(user_salary, baseline_salary, gender, race, industry, current_ag
 
     groups, group_salaries = [], []
     for (g, r), ratio in sorted(WAGE_RATIOS.items(), key=lambda x: -x[1]):
-        groups.append(f"{g.title()}\n{r.title()}")
+        groups.append(f"{g}\n{r}")
         group_salaries.append(
             round(NATIONAL_MEDIAN * ratio * ind_mult * edu_mult * exp_mult, 2)
         )
@@ -240,11 +240,11 @@ st.caption("Based on BLS 2023 data, AAUW research, and Pew Research Center findi
 
 st.sidebar.header("Your Profile")
 
-gender = st.sidebar.selectbox("Gender", ["woman", "man"]).lower()
+gender = st.sidebar.selectbox("Gender", ["Woman", "Man"])
 race = st.sidebar.selectbox(
     "Race / Ethnicity",
-    ["white", "black", "hispanic/latino", "asian", "native american", "multiracial"]
-).lower()
+    ["White", "Black", "Hispanic/Latino", "Asian", "Native American", "Multiracial"]
+)
 industry  = st.sidebar.selectbox("Industry", sorted(INDUSTRY_MULTIPLIERS.keys()))
 education = st.sidebar.selectbox("Education Level", list(EDUCATION_MULTIPLIERS.keys()))
 experience  = st.sidebar.slider("Years of Experience", 0, 45, 5)
@@ -268,7 +268,7 @@ col4.metric("Lifetime Gap", f"${life_gap:,.0f}")
 st.divider()
 
 st.subheader("Your Wage Ratio")
-st.write(f"For every **$1.00** a White man earns, you earn **${ratio:.2f}**.")
+st.markdown(f"For every **$1.00** a White man earns, you earn **${ratio:.2f}**.")
 
 context_note = CONTEXT.get((gender, race))
 if context_note:
