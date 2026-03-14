@@ -23,7 +23,7 @@ The project connects to DSJ by making making wage inequality visible and measura
 **Data sources:**
  
 - U.S. Bureau of Labor Statistics, *Highlights of Women's Earnings in 2023*
-- AAUW, *Today's Gender Pay Gap Data Shows Decline in Progress Towards Equity*
+- AAUW, *The Simple Truth About the Gender Pay Gap*
 - Pew Research Center, *Gender pay gap in U.S. has narrowed slightly over 2 decades*
 
 ---
