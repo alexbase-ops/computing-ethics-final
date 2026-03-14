@@ -81,7 +81,7 @@ python gui.py
 Or run the web app:
  
 ```cmd
-streamlit run code.py
+streamlit run app.py
 ```
  
 ---
@@ -110,7 +110,7 @@ python3 gui.py
 Or run the web app:
  
 ```bash
-streamlit run code.py
+streamlit run app.py
 ```
  
 ---
@@ -139,7 +139,7 @@ python3 gui.py
 Or run the web app:
  
 ```bash
-streamlit run code.py
+streamlit run app.py
 ```
  
 ---
