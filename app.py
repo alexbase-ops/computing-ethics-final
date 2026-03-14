@@ -268,8 +268,7 @@ col4.metric("Lifetime Gap", f"${life_gap:,.0f}")
 st.divider()
 
 st.subheader("Your Wage Ratio")
-dollar_ratio = f"${ratio:.2f}"
-st.markdown(f"For every **$1.00** a White man earns, you earn **{dollar_ratio}**.")
+st.metric(label="Your Wage Ratio", value=f"${ratio:.2f} per $1.00")
 
 context_note = CONTEXT.get((gender, race))
 if context_note:
@@ -286,7 +285,7 @@ st.divider()
 with st.expander("Data Sources"):
     st.markdown("""
 - **BLS** — *Highlights of Women's Earnings in 2023* (Report 1100)
-- **AAUW** — *Today's Gender Pay Gap Data Shows Decline in Progress Towards Equity*
+- **AAUW** — *The Simple Truth About the Gender Pay Gap*
 - **Pew Research Center** — *Gender pay gap in U.S. has narrowed slightly over 2 decades*
 
 All salary figures are estimates based on published wage ratios. This tool uses an **unadjusted** wage gap, which reflects real-world outcomes including occupational segregation and discrimination. Lifetime earnings assume 3% annual growth and retirement at age 65.
