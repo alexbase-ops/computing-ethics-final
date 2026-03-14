@@ -170,7 +170,7 @@ The Streamlit web app provides inputs via a sidebar including gender, race/ethni
  
 | File | Description | Contributor |
 |------|-------------|-------------|
-| `code.py` | Main Streamlit web app. Handles salary calculation, lifetime earnings projection, chart generation, and UI. | Alexander Gardner |
+| `app.py` | Main Streamlit web app. Handles salary calculation, lifetime earnings projection, chart generation, and UI. | Alexander Gardner |
 | `gui.py` | Tkinter desktop GUI. Takes user inputs via dropdowns and radio buttons and displays salary gap results. | Nathaniel Cisler |
 | `README.md` | Project documentation, background research, and instructions. | Alexander Gardner, Jaeden Poole |
 | `screenshot.png` | Screenshot of the desktop GUI showing all input fields and the See My Statistics button. | Alexander Gardner |
