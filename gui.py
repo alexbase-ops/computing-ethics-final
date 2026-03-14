@@ -1,34 +1,32 @@
 import tkinter as tk
-from tkinter import Listbox, StringVar, Radiobutton, Button, Label, END, ACTIVE, font
+from tkinter import Listbox, StringVar, Radiobutton, Button, Label, END
 
-# ── Wage data ─────────────────────────────────────────────────────────────────
-# Ratios relative to a White man (1.00). Source: BLS 2023, AAUW, Pew Research.
-
+# Wage ratios relative to a White man (1.00). Source: BLS 2023, AAUW, Pew Research.
 WAGE_RATIOS = {
-    ("Male",            "White"):              1.00,
-    ("Male",            "Asian"):              1.15,
-    ("Male",            "Black"):              0.76,
-    ("Male",            "Hispanic/Latino"):    0.68,
-    ("Male",            "Native American"):    0.70,
-    ("Male",            "Multiracial"):        0.83,
-    ("Female",          "White"):              0.79,
-    ("Female",          "Asian"):              0.87,
-    ("Female",          "Black"):              0.64,
-    ("Female",          "Hispanic/Latino"):    0.54,
-    ("Female",          "Native American"):    0.51,
-    ("Female",          "Multiracial"):        0.68,
-    ("Non-binary",      "White"):              0.82,
-    ("Non-binary",      "Asian"):              0.90,
-    ("Non-binary",      "Black"):              0.67,
-    ("Non-binary",      "Hispanic/Latino"):    0.58,
-    ("Non-binary",      "Native American"):    0.60,
-    ("Non-binary",      "Multiracial"):        0.72,
-    ("Prefer not to say", "White"):            0.90,
-    ("Prefer not to say", "Asian"):            1.00,
-    ("Prefer not to say", "Black"):            0.70,
-    ("Prefer not to say", "Hispanic/Latino"):  0.61,
-    ("Prefer not to say", "Native American"):  0.65,
-    ("Prefer not to say", "Multiracial"):      0.77,
+    ("Male",              "White"):           1.00,
+    ("Male",              "Asian"):           1.15,
+    ("Male",              "Black"):           0.76,
+    ("Male",              "Hispanic/Latino"): 0.68,
+    ("Male",              "Native American"): 0.70,
+    ("Male",              "Multiracial"):     0.83,
+    ("Female",            "White"):           0.79,
+    ("Female",            "Asian"):           0.87,
+    ("Female",            "Black"):           0.64,
+    ("Female",            "Hispanic/Latino"): 0.54,
+    ("Female",            "Native American"): 0.51,
+    ("Female",            "Multiracial"):     0.68,
+    ("Non-binary",        "White"):           0.82,
+    ("Non-binary",        "Asian"):           0.90,
+    ("Non-binary",        "Black"):           0.67,
+    ("Non-binary",        "Hispanic/Latino"): 0.58,
+    ("Non-binary",        "Native American"): 0.60,
+    ("Non-binary",        "Multiracial"):     0.72,
+    ("Prefer not to say", "White"):           0.90,
+    ("Prefer not to say", "Asian"):           1.00,
+    ("Prefer not to say", "Black"):           0.70,
+    ("Prefer not to say", "Hispanic/Latino"): 0.61,
+    ("Prefer not to say", "Native American"): 0.65,
+    ("Prefer not to say", "Multiracial"):     0.77,
 }
 
 EDUCATION_MULTIPLIERS = {
@@ -42,16 +40,15 @@ EDUCATION_MULTIPLIERS = {
     "Professional Degree":   1.80,
 }
 
-NATIONAL_MEDIAN  = 59000
-BASELINE_SALARY  = 59000  # White man with no multipliers applied
+NATIONAL_MEDIAN = 59000
 
 
 def calculate(gender, race, education):
     """Returns (user_salary, baseline_salary, gap_dollars, gap_pct, ratio)."""
-    ratio    = WAGE_RATIOS.get((gender, race), 1.0)
-    edu_mult = EDUCATION_MULTIPLIERS.get(education, 1.0)
+    ratio           = WAGE_RATIOS.get((gender, race), 1.0)
+    edu_mult        = EDUCATION_MULTIPLIERS.get(education, 1.0)
     user_salary     = round(NATIONAL_MEDIAN * ratio * edu_mult, 2)
-    baseline_salary = round(NATIONAL_MEDIAN * 1.0  * edu_mult, 2)
+    baseline_salary = round(NATIONAL_MEDIAN * 1.0 * edu_mult, 2)
     gap_dollars     = round(baseline_salary - user_salary, 2)
     gap_pct         = round((gap_dollars / baseline_salary) * 100, 1) if baseline_salary else 0
     return user_salary, baseline_salary, gap_dollars, gap_pct, ratio
@@ -61,20 +58,19 @@ def calculate(gender, race, education):
 
 window = tk.Tk()
 window.title("Wage Gap Calculator")
-window.geometry("1000x620")
+window.geometry("1000x680")
 window.configure(bg="#1a1a2e")
 
-HEADING_FONT  = ("Arial", 13, "bold")
-LABEL_FONT    = ("Arial", 11)
-RESULT_FONT   = ("Arial", 12)
+HEADING_FONT = ("Arial", 13, "bold")
+LABEL_FONT   = ("Arial", 11)
+RESULT_FONT  = ("Arial", 12)
 
 # ── Gender ────────────────────────────────────────────────────────────────────
 
 tk.Label(window, text="Gender", font=HEADING_FONT,
          bg="#1a1a2e", fg="white").pack(pady=(20, 5))
 
-gender_var = StringVar(value="Male")
-
+gender_var   = StringVar(value="Male")
 gender_frame = tk.Frame(window, bg="#1a1a2e")
 gender_frame.pack()
 
@@ -98,7 +94,7 @@ race_listbox = Listbox(
 )
 for item in ["White", "Black", "Hispanic/Latino", "Asian", "Native American", "Multiracial"]:
     race_listbox.insert(END, item)
-race_listbox.select_set(0)  # Default to first item
+race_listbox.select_set(0)
 race_listbox.pack()
 
 # ── Education Level ───────────────────────────────────────────────────────────
@@ -117,21 +113,14 @@ for item in EDUCATION_MULTIPLIERS.keys():
 education_listbox.select_set(4)  # Default to Bachelor's Degree
 education_listbox.pack()
 
-# ── Results ───────────────────────────────────────────────────────────────────
-
-result_label = tk.Label(
-    window, text="", font=RESULT_FONT,
-    bg="#1a1a2e", fg="#4ecca3", justify="left"
-)
-result_label.pack(pady=(15, 5))
-
+# ── Button and results ────────────────────────────────────────────────────────
 
 def show_statistics():
-    gender    = gender_var.get()
-    race_sel  = race_listbox.curselection()
-    edu_sel   = education_listbox.curselection()
+    gender  = gender_var.get()
+    race_sel = race_listbox.curselection()
+    edu_sel  = education_listbox.curselection()
 
-    # Fallback if user didn't select anything from a listbox
+    # Fall back to defaults if the user somehow clicks before selecting
     race      = race_listbox.get(race_sel[0]) if race_sel else "White"
     education = education_listbox.get(edu_sel[0]) if edu_sel else "Bachelor's Degree"
 
@@ -157,5 +146,12 @@ Button(
     activebackground="#c73652", activeforeground="white",
     relief="flat", padx=20, pady=8
 ).pack(pady=(15, 5))
+
+# Result label sits below the button
+result_label = tk.Label(
+    window, text="", font=RESULT_FONT,
+    bg="#1a1a2e", fg="#4ecca3", justify="left"
+)
+result_label.pack(pady=(10, 20))
 
 window.mainloop()
