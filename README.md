@@ -99,6 +99,25 @@ streamlit run app.py
 
 ---
 
+### If Running Locally
+After downloading or cloning the repo, open your terminal and navigate to the project directory before running any commands.
+
+**Windows (Command Prompt):**
+```cmd
+cd C:\Users\YourName\Downloads\computing-ethics-final-Wage-Gap-Calculator--main
+```
+
+Replace `YourName` with your actual username. If you cloned the repo with Git, the folder will be wherever you ran `git clone`.
+
+**macOS / Linux:**
+```bash
+cd ~/Downloads/computing-ethics-final-Wage-Gap-Calculator--main
+```
+
+Once you are inside the project directory, all run commands will work as written.
+
+---
+
 **The web app** opens automatically at `http://localhost:8501` in your browser. No additional configuration is needed. Follow the sidebar prompts to enter your profile.
 ```
 
