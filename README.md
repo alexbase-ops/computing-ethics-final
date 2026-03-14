@@ -158,11 +158,11 @@ The screenshot below shows the Tkinter desktop interface. The user selects their
  
 ---
  
-### Web App (code.py)
+### Web App (app.py)
  
-The Streamlit web app provides the same inputs via a sidebar, with additional fields for industry, years of experience, and current age. It displays four summary metrics at the top of the page and renders three charts: an annual salary comparison bar chart, a demographic comparison across all groups in the selected industry, and a lifetime earnings trajectory showing how the gap compounds from the user's current age to retirement.
+The Streamlit web app provides inputs via a sidebar including gender, race/ethnicity, industry, education level, years of experience, and current age. It displays four summary metrics at the top of the page and renders three charts: an annual salary comparison bar chart, a demographic comparison across all groups in the selected industry, and a lifetime earnings trajectory showing how the gap compounds from the user's current age to retirement.
  
-> Additional screenshots of the web app output will be added once the Streamlit deployment is complete.
+![Screenshot of the Wage Gap Calculator Streamlit web app. The left sidebar shows profile inputs including Gender set to Man, Race/Ethnicity set to Asian, Industry set to Technology, Education Level set to Professional Degree, and sliders for Years of Experience at 45 and Current Age at 43. The main panel shows the title Wage Gap Calculator with four metric cards displaying Your Expected Salary at $429,287, White Man Baseline at $373,293, Annual Gap at $-55,994 with a -15.0% delta, and Lifetime Gap. Below the metrics is a Your Wage Ratio section showing 1.15 per $1.00 and a blue info box noting Asian men earn 15% more than White men on average. A Visual Analysis section shows three charts: an annual salary comparison bar chart, a horizontal bar chart of all demographic groups in the Technology industry, and a lifetime earnings trajectory line chart.](screenshot(streamlit).png)
  
 ---
  
@@ -174,7 +174,7 @@ The Streamlit web app provides the same inputs via a sidebar, with additional fi
 | `gui.py` | Tkinter desktop GUI. Takes user inputs via dropdowns and radio buttons and displays salary gap results. | Nathaniel Cisler |
 | `README.md` | Project documentation, background research, and instructions. | Alexander Gardner, Jaeden Poole |
 | `screenshot.png` | Screenshot of the desktop GUI showing all input fields and the See My Statistics button. | Alexander Gardner |
- 
+| `screenshot(streamlit).png` | Screenshot of the Streamlit web app showing sidebar inputs, metric cards, wage ratio, and all three charts. | Alexander Gardner |
 ---
  
 ## Citations
