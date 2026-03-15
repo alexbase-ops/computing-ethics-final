@@ -1,7 +1,7 @@
 """
-Wage Gap Calculator - Streamlit Web App
-Run with: streamlit run app.py
-Dependencies: pip install streamlit matplotlib numpy
+Wage Gap Calculator — Streamlit web app.
+Run: streamlit run app.py
+Install: pip install streamlit matplotlib numpy
 """
 
 import streamlit as st
@@ -10,8 +10,8 @@ import matplotlib.patches as mpatches
 import numpy as np
 
 
-# Wage ratios relative to a White man (1.00 = baseline).
-# Source: BLS Highlights of Women's Earnings 2023, AAUW, Pew Research Center.
+# Each value is cents earned per White man's dollar. White man = 1.00.
+# BLS Highlights of Women's Earnings 2023, AAUW, Pew Research Center.
 WAGE_RATIOS = {
     ("Man",   "White"):           1.00,
     ("Man",   "Asian"):           1.15,
@@ -27,8 +27,7 @@ WAGE_RATIOS = {
     ("Woman", "Multiracial"):     0.68,
 }
 
-# How much each industry pays relative to the national median.
-# 1.85 = 85% above median, 0.60 = 40% below median.
+# Pay relative to the national median. 1.85 = 85% above, 0.60 = 40% below.
 INDUSTRY_MULTIPLIERS = {
     "Arts/Entertainment":  0.80,
     "Construction":        1.10,
@@ -55,10 +54,10 @@ EDUCATION_MULTIPLIERS = {
     "Professional Degree":   1.80,
 }
 
-# BLS 2023 national median annual earnings — the base for all calculations.
+# BLS 2023 national median annual earnings. Every calculation starts here.
 NATIONAL_MEDIAN = 59000
 
-# Research callouts shown in the UI for specific demographic groups.
+# Data callouts for specific groups. Shown in the UI when there's a match.
 CONTEXT = {
     ("Woman", "Hispanic/Latino"): "Hispanic women earn 54 cents per White man's dollar, the largest gap of any group tracked by BLS.",
     ("Woman", "Black"):           "Black women earn 64 cents per White man's dollar. Progress has slowed significantly since 2000 (Pew, 2023).",
@@ -74,9 +73,9 @@ CONTEXT = {
 
 def calculate_salary(gender, race, industry, education, experience):
     """
-    Estimates annual salary by multiplying the national median by four factors:
-    the demographic wage ratio, industry pay level, education premium, and
-    an experience bump of roughly 2% per year.
+    Returns estimated annual salary for the given profile.
+    Multiplies the national median by the wage ratio, industry rate,
+    education level, and ~2% per year of experience.
     """
     ratio    = WAGE_RATIOS.get((gender, race), 1.0)
     ind_mult = INDUSTRY_MULTIPLIERS.get(industry, 1.0)
@@ -87,8 +86,8 @@ def calculate_salary(gender, race, industry, education, experience):
 
 def calculate_baseline(industry, education, experience):
     """
-    Same calculation as calculate_salary but with a wage ratio of 1.0,
-    so the comparison is apples-to-apples within the same job context.
+    Same as calculate_salary but forces wage ratio to 1.0 (White man baseline).
+    Used to isolate the demographic gap from industry, education, and experience.
     """
     ind_mult = INDUSTRY_MULTIPLIERS.get(industry, 1.0)
     edu_mult = EDUCATION_MULTIPLIERS.get(education, 1.0)
@@ -98,9 +97,9 @@ def calculate_baseline(industry, education, experience):
 
 def lifetime_earnings(annual_salary, current_age, retirement_age=65, growth=0.03):
     """
-    Projects cumulative earnings from current_age to retirement, applying
-    3% annual growth each year. The gap between two people's lifetime totals
-    shows how a small annual difference compounds into a much larger one.
+    Totals annual earnings from current_age to retirement_age,
+    growing salary by 3% each year. Run this for both profiles
+    to see how an annual gap widens over a full career.
     """
     total  = 0
     salary = annual_salary
@@ -114,19 +113,19 @@ def lifetime_earnings(annual_salary, current_age, retirement_age=65, growth=0.03
 
 def make_charts(user_salary, baseline_salary, gender, race, industry, current_age):
     """
-    Builds a 3-panel figure:
-      1. Bar chart: user salary vs. baseline
-      2. Horizontal bars: all demographic groups in the selected industry
-         (standardized to Bachelor's degree, 10 years experience)
-      3. Line chart: cumulative lifetime earnings from current age to 65,
-         with the gap shaded between the two lines
+    Returns a 3-panel matplotlib figure:
+      Panel 1 — bar chart of user salary vs. White man baseline.
+      Panel 2 — horizontal bars for all demographic groups in the selected
+                industry, fixed to Bachelor's degree and 10 years experience.
+      Panel 3 — cumulative lifetime earnings from current_age to 65,
+                with the gap area shaded.
     """
     fig, axes = plt.subplots(1, 3, figsize=(16, 5))
     fig.patch.set_facecolor("#0f0f1a")
     for ax in axes:
         ax.set_facecolor("#1a1a2e")
 
-    # ── Panel 1: Annual salary bar chart ──────────────────────────────────────
+    # Panel 1: user vs. baseline, side by side.
     ax1 = axes[0]
     bars = ax1.bar(
         ["You", "White Man\n(Baseline)"],
@@ -157,8 +156,7 @@ def make_charts(user_salary, baseline_salary, gender, race, industry, current_ag
         color="#f5a623", fontsize=9, style="italic"
     )
 
-    # ── Panel 2: All demographic groups ───────────────────────────────────────
-    # Fixed profile (Bachelor's, 10 yrs exp) so every group is on equal footing.
+    # Panel 2: every demographic group at the same fixed profile (Bachelor's, 10 yrs).
     ax2 = axes[1]
     ind_mult       = INDUSTRY_MULTIPLIERS.get(industry, 1.0)
     edu_mult       = 1.20
@@ -190,7 +188,7 @@ def make_charts(user_salary, baseline_salary, gender, race, industry, current_ag
     ax2.legend(handles=legend_items, loc="lower right",
                facecolor="#1a1a2e", labelcolor="white", fontsize=8)
 
-    # ── Panel 3: Lifetime earnings trajectory ─────────────────────────────────
+    # Panel 3: lifetime earnings for both profiles, gap shaded between the lines.
     ax3 = axes[2]
     ages             = list(range(current_age, 66))
     u_cumul, b_cumul = [], []
@@ -230,9 +228,7 @@ def make_charts(user_salary, baseline_salary, gender, race, industry, current_ag
     return fig
 
 
-# ── Streamlit UI ──────────────────────────────────────────────────────────────
-# Streamlit reruns the whole script every time an input changes, so all
-# calculations below always reflect whatever is currently in the sidebar.
+# Streamlit UI — reruns the full script on every input change.
 
 st.set_page_config(page_title="Wage Gap Calculator", layout="wide")
 st.title("Wage Gap Calculator")
