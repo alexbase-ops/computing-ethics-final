@@ -8,6 +8,27 @@ This project was built for a Digital Social Justice course. The goal is to make 
 
 ---
 
+## Background and Research
+
+This project aims to support and highlight the people across out country who experience differentiated pay than other people. Here are some facts we found on the matter:
+
+Average pay gap in United States: 17% 
+For age 16+: 19% 
+For age 25+: 12% 
+Women make on average 83 cents for every dollar a man makes 
+
+Based on 2021 statistics: 
+Highest pay gap job is insurance/financing with 36% gap 
+Lowest is real estate with only 2%, followed closely by mining/quarrying with 2.2% 
+Average still 17% for all jobs 
+
+On average, Asian and White/Caucasian men make the most.
+Hispanic and Native American women make the least.
+
+Years of experience and level of degree will have an effect on the wage gap.
+
+---
+
 ## Dependencies
 
 **Python version:** 3.8 or higher
